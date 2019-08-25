@@ -1,0 +1,71 @@
+{
+  "private": true,
+  "description": "Recreating sorabel catalog page",
+  "keywords": [
+    "umi",
+    "umi pwa",
+    "umi.js",
+    "umijs",
+    "react",
+    "react pwa",
+    "react ssr",
+    "react universal",
+    "react.js",
+    "reactjs",
+    "antd",
+    "antd.js",
+    "antdjs"
+  ],
+  "homepage": "https://github.com/jefrydco/sorabel-catalog#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jefrydco/sorabel-catalog"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Jefry Dewangga",
+    "url": "https://jefrydco.id"
+  },
+  "scripts": {
+    "start": "umi dev",
+    "build": "umi build",
+    "test": "umi test",
+    "lint": "eslint --ext .js src mock tests"
+  },
+  "dependencies": {
+    "antd": "^3.22.0",
+    "dva": "^2.6.0-beta.12",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router-dom": "^5.0.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^9.0.0",
+    "eslint": "^5.4.0",
+    "eslint-config-umi": "^1.5.0",
+    "eslint-plugin-flowtype": "^2.50.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.5.0",
+    "husky": "^3.0.4",
+    "lint-staged": "^9.2.4",
+    "react-test-renderer": "^16.8.6",
+    "umi": "^2.8.20",
+    "umi-plugin-react": "^1.9.19"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}
