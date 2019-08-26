@@ -184,7 +184,7 @@ const ProductForm = props => {
               }
             ],
           })(
-            <Input placeholder="Name" allowClear />,
+            <Input placeholder="Ex: My Lovely Product" allowClear />,
           )}
         </Form.Item>
         <Form.Item label="Price">
@@ -196,7 +196,7 @@ const ProductForm = props => {
               }
             ],
           })(
-            <Input addonBefore="Rp." placeholder="Price" allowClear />,
+            <Input addonBefore="Rp." placeholder="Ex: 100000" allowClear />,
           )}
         </Form.Item>
         <Form.Item label="Color">
@@ -208,7 +208,7 @@ const ProductForm = props => {
               }
             ],
           })(
-            <Select placeholder="Color">
+            <Select placeholder="Ex: Pink">
               {colors.map(color => (
                 <Select.Option key={color}>
                   <Badge color={color.toLowerCase().replace(/\s/g, '')} text={color} />
@@ -230,7 +230,7 @@ const ProductForm = props => {
             <Select
               mode="tags"
               tokenSeparators={[',']}
-              placeholder="Sizes"
+              placeholder="Ex: XXL"
             >
               {sizes.map(size => (
                 <Select.Option key={size}>{size}</Select.Option>
@@ -249,7 +249,7 @@ const ProductForm = props => {
             ],
           })(
             <Input.TextArea
-              placeholder="Description"
+              placeholder="Ex: My product has been proven for over 10 years."
               rows={5}
               autosize={{ minRows: 5 }} />,
           )}
