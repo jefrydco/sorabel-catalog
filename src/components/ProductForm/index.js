@@ -1,21 +1,71 @@
-import { Form, Row, Col, Icon, Input, Button, Select, Badge, Upload, Modal } from 'antd'
+import { Form, Row, Col, Icon, Input, Button, Select, Badge, Upload, Modal, notification } from 'antd'
 import { ContentCard } from '../Card'
 import styles from './index.css'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { storage, db } from '../firebase'
 import uuidv4 from 'uuid/v4'
+import router from 'umi/router'
+import { useCollectionData } from 'react-firebase-hooks/firestore'
 
 const colors = ['Pink','Red','Yellow','Orange','Cyan','Green','Blue','Purple','Geek Blue','Magenta','Volcano','Gold','Lime']
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'XXXXL', 'XXXXXL']
 const productsStorageRef = storage.ref('products')
 const productsDbRef = db.collection('products')
+const categoriesDbRef = db.collection('categories')
 
 const ProductForm = props => {
+  const [isLoading, setLoading] = useState(false)
+  const [redirect, setRedirect] = useState(false)
+  const [categories, isCategoriesLoading, isCategoriesError] = useCollectionData(categoriesDbRef)
+
+  useEffect(() => {
+    if (isCategoriesError) {
+      notification.error({
+        message: 'Category failed to load',
+        placement: 'bottomRight'
+      });
+    }
+  }, [isCategoriesError])
+
+  useEffect(() => {
+    if (redirect) {
+      const id = setInterval(() => {
+        router.push('/admin/product')
+      }, 1000);
+      return () => {
+        clearInterval(id)
+      }
+    }
+  }, [redirect])
+
   const handleSubmit = e => {
     e.preventDefault();
-    props.form.validateFieldsAndScroll((err, values) => {
+    props.form.validateFieldsAndScroll(async (err, _product) => {
       if (!err) {
-        console.log(values);
+        try {
+          setLoading(true)
+          const uid = uuidv4()
+          const product = {
+            ..._product,
+            uid,
+            images: _product.images.map(image => {
+              delete image.originFileObj
+              return {
+                ...image,
+              }
+            })
+          }
+          await productsDbRef.doc(uid).set(product, { merge: true })
+          await notification.success({
+            message: 'Product is saved',
+            placement: 'bottomRight'
+          })
+          await setRedirect(true)
+        } catch (error) {
+          console.log(error)
+        } finally {
+          setLoading(false)
+        }
       }
     });
   };
@@ -196,7 +246,25 @@ const ProductForm = props => {
               }
             ],
           })(
-            <Input addonBefore="Rp." placeholder="Ex: 100000" allowClear />,
+            <Input type="number" addonBefore="Rp." placeholder="Ex: 100000" allowClear />,
+          )}
+        </Form.Item>
+        <Form.Item label="Category">
+          {getFieldDecorator('category', {
+            rules: [
+              {
+                required: true,
+                message: 'Please choose category.'
+              }
+            ],
+          })(
+            <Select placeholder="Ex: Pink">
+              {!isCategoriesLoading ? categories.map(category => (
+                <Select.Option key={category.uid}>
+                  {category.text}
+                </Select.Option>
+              )) : null}
+            </Select>,
           )}
         </Form.Item>
         <Form.Item label="Color">
@@ -291,7 +359,12 @@ const ProductForm = props => {
             },
           }
         }>
-          <Button type="primary" htmlType="submit" onSubmit={handleSubmit}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={isLoading}
+            onSubmit={handleSubmit}
+          >
             {props.id ? `Edit` : `Save`}
             <Icon type={props.id ? `edit` : `save`} />
           </Button>
