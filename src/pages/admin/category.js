@@ -114,7 +114,7 @@ const Category = props => {
         dataSource={categories}
         columns={columns}
         loading={isCategoriesLoading}
-        rowKey="id"/>
+        rowKey="uid"/>
       <Modal
         title={`${isEditing ? `Edit` : 'Save'} Category`}
         visible={isModal}
