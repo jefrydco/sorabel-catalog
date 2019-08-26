@@ -2,6 +2,9 @@
 
 Recreating sorabel catalog page
 
+## Introduction
+This project can be accessed through this link [http://sorabel-catalogs.web.app](http://sorabel-catalogs.web.app), you can log in into the admin by accessing the `/login` page. You can manage product and category there.
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
