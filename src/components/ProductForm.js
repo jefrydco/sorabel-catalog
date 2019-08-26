@@ -1,0 +1,271 @@
+import { Form, Row, Col, Icon, Input, Button, Select, Badge, Upload, Modal } from 'antd'
+import { ContentCard } from './Card'
+import styles from './ProductForm.css'
+import { useState } from 'react';
+
+const colors = ['Pink','Red','Yellow','Orange','Cyan','Green','Blue','Purple','Geek Blue','Magenta','Volcano','Gold','Lime']
+const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'XXXXL', 'XXXXXL']
+
+const ProductForm = props => {
+  const handleSubmit = e => {
+    e.preventDefault();
+    props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        console.log(values);
+      }
+    });
+  };
+
+  const { getFieldDecorator, getFieldValue } = props.form;
+  const sizeValues = getFieldValue('sizes') || []
+
+  const handleRemoveSizeDescription = _sizeValue => {
+    // can use data-binding to get
+    // We need at least one passenger
+    if (sizeValues.length === 1) {
+      return;
+    }
+
+    // can use data-binding to set
+    props.form.setFieldsValue({
+      sizes: sizeValues.filter(sizeValue => sizeValue !== _sizeValue),
+    });
+  };
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 4 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 20 },
+    },
+  };
+  const formItemLayoutWithOutLabel = {
+    wrapperCol: {
+      xs: { span: 24, offset: 0 },
+      sm: { span: 20, offset: 4 },
+    },
+  };
+
+  const formItems = sizeValues.map((sizeValue, index) => (
+    <Form.Item
+      {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
+      label={index === 0 ? 'Size Description' : ''}
+      required={true}
+      key={sizeValue}
+    >
+      <Row>
+        <Col>Size Description for {sizeValue}:</Col>
+      </Row>
+      <Row gutter={8} type="flex" justify="space-between" align="middle">
+        <Col xs={23}>
+          {getFieldDecorator(`sizeDescriptions[${index}]`, {
+            rules: [
+              {
+                required: true,
+                whitespace: true,
+                message: `Please input size description for ${sizeValue} or delete this field.`,
+              },
+            ],
+          })(<Input.TextArea
+                placeholder={`Lingkar dada 110 cm\nLebar bahu 41 cm\nPanjang lengan 19 cm\nLingkar lengan 54 cm\nPanjang 96 cm`}
+                rows={5}
+                autosize={{ minRows: 5 }}
+              />)}
+        </Col>
+        <Col xs={1}>
+          {sizeValues.length > 1 ? (
+            <Icon
+              className={styles.DeleteButton}
+              type="minus-circle-o"
+              onClick={() => handleRemoveSizeDescription(sizeValue)}
+            />
+          ) : null}
+        </Col>
+      </Row>
+    </Form.Item>
+  ));
+
+  const [isPreview, setPreview] = useState(false)
+  const [previewImage, setPreviewImage] = useState('')
+  // eslint-disable-next-line
+  const [images, setImages] = useState([])
+
+  const getBase64 = file => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+  const handleImagesCancel = () => setPreview(false);
+
+  const handleImagesPreview = async file => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+
+    setPreview(true)
+    setPreviewImage(file.url || file.preview)
+  };
+
+  const handleImagesChange = e => {
+    if (Array.isArray(e.fileList)) {
+      setImages(Array.from(e.fileList))
+    }
+    return e && e.fileList;
+  };
+
+  return (
+    <ContentCard
+      title={`${props.id ? `Edit` : `Add`} Product`}
+      extra={
+        <Button type="primary" onClick={handleSubmit}>
+          {props.id ? `Edit` : `Save`}
+          <Icon type={props.id ? `edit` : `save`} />
+        </Button>
+      }
+    >
+      <Form
+        onSubmit={handleSubmit}
+        labelCol={{
+          xs: { span: 24 },
+          sm: { span: 4 },
+        }}
+        wrapperCol={{
+          xs: { span: 24 },
+          sm: { span: 20 },
+        }}
+        layout="horizontal"
+        className="login-form"
+      >
+        <Form.Item label="Name">
+          {getFieldDecorator('name', {
+            rules: [
+              {
+                required: true,
+                message: 'Please input name.'
+              }
+            ],
+          })(
+            <Input placeholder="Name" allowClear />,
+          )}
+        </Form.Item>
+        <Form.Item label="Price">
+          {getFieldDecorator('price', {
+            rules: [
+              {
+                required: true,
+                message: 'Please input price.'
+              }
+            ],
+          })(
+            <Input addonBefore="Rp." placeholder="Price" allowClear />,
+          )}
+        </Form.Item>
+        <Form.Item label="Color">
+          {getFieldDecorator('color', {
+            rules: [
+              {
+                required: true,
+                message: 'Please choose color.'
+              }
+            ],
+          })(
+            <Select placeholder="Color">
+              {colors.map(color => (
+                <Select.Option key={color}>
+                  <Badge color={color.toLowerCase().replace(/\s/g, '')} text={color} />
+                </Select.Option>
+              ))}
+            </Select>,
+          )}
+        </Form.Item>
+        <Form.Item label="Sizes">
+          {getFieldDecorator('sizes', {
+            initialValue: [],
+            rules: [
+              {
+                required: true,
+                message: 'Please choose at least min 1 sizes.'
+              }
+            ],
+          })(
+            <Select
+              mode="tags"
+              tokenSeparators={[',']}
+              placeholder="Sizes"
+            >
+              {sizes.map(size => (
+                <Select.Option key={size}>{size}</Select.Option>
+              ))}
+            </Select>,
+          )}
+        </Form.Item>
+        {formItems}
+        <Form.Item label="Description">
+          {getFieldDecorator('description', {
+            rules: [
+              {
+                required: true,
+                message: 'Please input description.'
+              }
+            ],
+          })(
+            <Input.TextArea
+              placeholder="Description"
+              rows={5}
+              autosize={{ minRows: 5 }} />,
+          )}
+        </Form.Item>
+        <Form.Item label="Images">
+          <div className="clearfix">
+            {getFieldDecorator('images', {
+              valuePropName: 'fileList',
+              getValueFromEvent: handleImagesChange,
+            })(
+              <Upload
+                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                listType="picture-card"
+                accept="images/*"
+                multiple={true}
+                onPreview={handleImagesPreview}
+              >
+                <div>
+                  <Icon type="plus" />
+                  <div className="ant-upload-text">Upload</div>
+                </div>
+              </Upload>
+            )}
+            <Modal visible={isPreview} footer={null} onCancel={handleImagesCancel}>
+              <img alt="example" style={{ width: '100%' }} src={previewImage} />
+            </Modal>
+          </div>
+        </Form.Item>
+        <Form.Item wrapperCol={
+          {
+            xs: {
+              span: 24,
+              offset: 0,
+            },
+            sm: {
+              span: 16,
+              offset: 4,
+            },
+          }
+        }>
+          <Button type="primary" htmlType="submit" onSubmit={handleSubmit}>
+            {props.id ? `Edit` : `Save`}
+            <Icon type={props.id ? `edit` : `save`} />
+          </Button>
+        </Form.Item>
+      </Form>
+    </ContentCard>
+  )
+}
+
+const WrappedProductForm = Form.create({ name: 'product_form' })(ProductForm)
+export default WrappedProductForm

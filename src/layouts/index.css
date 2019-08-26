@@ -1,0 +1,33 @@
+.Layout {
+  min-height: 100vh;
+  max-width: 100%;
+}
+
+.Header {
+  position: fixed;
+  background: linear-gradient(0deg, rgb(179, 179, 179), rgb(179, 179, 179) 49%, transparent 51%) center bottom / 100% 0.1rem no-repeat rgb(255, 255, 255);
+  z-index: 999;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  line-height: 56px;
+  padding: 0
+}
+
+.Title {
+  margin: 0
+}
+
+.Content {
+  margin-top: 56px;
+  padding: 0 56px;
+}
+
+.ContentNoPad {
+  margin-top: 56px
+}
+
+.Menu:not(:last-child) {
+  margin-right: 10px
+}
