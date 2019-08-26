@@ -1,3 +1,12 @@
 .BaseCard {
   margin-bottom: 10px
 }
+
+.ProductCard:not(:last-child) {
+  margin-bottom: 10px
+}
+
+.Button:not(:last-child) {
+  margin-right: 8px;
+  margin-bottom: 8px
+}

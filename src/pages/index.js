@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Card, Row, Col, notification, Tag, Button } from 'antd'
+import { useEffect } from 'react'
+import { Card, Row, Col, notification, Select, Button } from 'antd'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import Link from 'umi/link'
 
@@ -64,17 +64,15 @@ export default (props) => {
             />
           </Card>
         </Col>
-    ))}
+      ))}
     </Row>
   )
 
   const Categories = (
     !isCategoriesLoading ? categories.map(category => (
-      <Tag key={category.uid}>
-        <Link to="/">
-          {category.text}
-        </Link>
-      </Tag>
+      <Button to="/" className={styles.Button} key={category.uid}>
+        {category.text}
+      </Button>
     )) : null
   )
 
@@ -92,10 +90,49 @@ export default (props) => {
     </Row>
   )
 
+  const Sort = (
+    <div style={{ marginBottom: 10 }}>
+      <Select className={styles.Button} placeholder="Urutkan" size="large" style={{ width: 150 }}>
+        {
+          [
+            { text: 'Terbaru', value: 'date_desc' },
+            { text: 'Termurah', value: 'price_asc' },
+            { text: 'Termahal', value: 'price_desc' }
+          ].map(filter => (
+            <Select.Option key={filter.value}>
+              {filter.text}
+            </Select.Option>
+          ))
+        }
+      </Select>
+      <Button className={styles.Button} size="large">Filter</Button>
+    </div>
+  )
+
+  const Products = isProductsLoading ? null : (
+    products.map(product => (
+      <Card 
+        size="large"
+        className={styles.ProductCard}
+        cover={
+          <img
+            src={product.images[0].response.url}
+            alt={product.name} />
+        }
+      >
+        <Card.Meta
+          title={product.name}
+          description={currencyFormatter.format(product.price)}
+        />
+      </Card>
+    ))
+  )
+
   return (
     <>
       <BaseCard
         title="Terbaru"
+        loading={isProductsLoading}
         extra={
           <Link to="/">Lihat Semua</Link>
         }
@@ -103,6 +140,7 @@ export default (props) => {
         {NewProducts}
       </BaseCard>
       <BaseCard
+        loading={isCategoriesLoading}
         title="Kategori"
       >
         {Categories}
@@ -111,6 +149,18 @@ export default (props) => {
         title="Berdasarkan Harga"
       >
         {Prices}
+      </BaseCard>
+      <BaseCard title="Editorial">
+        <a title="Editorial" href="https://www.sorabel.com/blog/5-jenis-dress-yang-penting-wanita-tahu">
+          <img alt="" src="https://imager-next.freetls.fastly.net/images/resized/480/assets-category-banner/250619_Sub-Category_DRESS.jpg" />
+        </a>
+      </BaseCard>
+      <BaseCard
+        title="Rekomendasi Produk"
+        loading={isProductsLoading}
+      >
+        {Sort}
+        {Products}
       </BaseCard>
     </>
   );
