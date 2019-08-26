@@ -3,7 +3,7 @@ import { Table, Tag, Button, Icon, notification, Avatar, Popconfirm } from 'antd
 import router from 'umi/router';
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 
-import { db } from '../../../components/firebase'
+import { storage, db } from '../../../components/firebase'
 import { ContentCard } from '../../../components/Card'
 
 const productsDbRef = db.collection('products')
@@ -29,10 +29,11 @@ export default props => {
     ))
   }
 
-  const handleConfirmDelete = async uid => {
+  const handleConfirmDelete = async product => {
     try {
       setLoading(true)
-      await productsDbRef.doc(uid).delete()
+      await productsDbRef.doc(product.uid).delete()
+      await Promise.all(product.images.map(({ response }) => storage.ref(response.fullPath).delete()))
     } catch (error) {
       console.log(error)
     } finally {
@@ -45,7 +46,7 @@ export default props => {
     return <Avatar src={thumbUrl} alt={name} size="large" />
   }
 
-  const actionRenderer = uid => {
+  const actionRenderer = (uid, record) => {
     return (
       <>
         <Button onClick={() => router.push(`/admin/product/edit/${uid}`)} type="primary" style={{ marginRight: '5px' }}>
@@ -54,7 +55,7 @@ export default props => {
         </Button>
         <Popconfirm
           title="Are you sure delete this category?"
-          onConfirm={() => handleConfirmDelete(uid)}
+          onConfirm={() => handleConfirmDelete(record)}
         >
           <Button type="danger">
             Delete
