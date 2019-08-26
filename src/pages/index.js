@@ -17,7 +17,6 @@ export default (props) => {
     <>
       <Card
         title="Terbaru"
-        style={{ marginTop: '30px' }}
         extra={
           <Link to="/">Lihat Semua</Link>
         }>

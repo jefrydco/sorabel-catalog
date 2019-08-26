@@ -1,10 +1,14 @@
 import { Form, Row, Col, Icon, Input, Button, Select, Badge, Upload, Modal } from 'antd'
-import { ContentCard } from './Card'
-import styles from './ProductForm.css'
+import { ContentCard } from '../Card'
+import styles from './index.css'
 import { useState } from 'react';
+import { storage, db } from '../firebase'
+import uuidv4 from 'uuid/v4'
 
 const colors = ['Pink','Red','Yellow','Orange','Cyan','Green','Blue','Purple','Geek Blue','Magenta','Volcano','Gold','Lime']
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'XXXXL', 'XXXXXL']
+const productsStorageRef = storage.ref('products')
+const productsDbRef = db.collection('products')
 
 const ProductForm = props => {
   const handleSubmit = e => {
@@ -111,6 +115,35 @@ const ProductForm = props => {
     setPreview(true)
     setPreviewImage(file.url || file.preview)
   };
+
+  const handleImagesAction = async ({onError, onSuccess, file}) => {
+    try {
+      const uploadRef = productsStorageRef.child(`${uuidv4()}.jpg`)
+      const storageSnap = await uploadRef.put(file)
+      if (storageSnap) {
+        const url = await storageSnap.ref.getDownloadURL()
+        const { name, timeCreated, fullPath  } = storageSnap.metadata
+
+        onSuccess({
+          name,
+          url,
+          timeCreated,
+          fullPath
+        })
+      }
+    } catch (error) {
+      onError(error)
+    }
+  }
+
+  const handleImagesRemove = async file => {
+    try {
+      const uploadRef = storage.ref(file.response.fullPath)
+      await uploadRef.delete()
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const handleImagesChange = e => {
     if (Array.isArray(e.fileList)) {
@@ -228,10 +261,11 @@ const ProductForm = props => {
               getValueFromEvent: handleImagesChange,
             })(
               <Upload
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                 listType="picture-card"
                 accept="images/*"
                 multiple={true}
+                customRequest={handleImagesAction}
+                onRemove={handleImagesRemove}
                 onPreview={handleImagesPreview}
               >
                 <div>
