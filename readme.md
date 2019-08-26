@@ -3,7 +3,9 @@
 Recreating sorabel catalog page
 
 ## Introduction
-This project can be accessed through this link [http://sorabel-catalogs.web.app](http://sorabel-catalogs.web.app), you can log in into the admin by accessing the `/login` page. You can manage product and category there.
+This project can be accessed through this link [http://sorabel-catalogs.web.app](http://sorabel-catalogs.web.app), you can log in into the admin by accessing the `/login` page. The authentication system is handled by firebase, you only need to click the login button and Firebase will guide through the authentication process.
+
+After the sign in process completes, you'll be redirected into admin page located in `/admin`. You can manage product and category there.
 
 ## Getting Started
 
@@ -81,6 +83,8 @@ Then visit http://localhost:5000
 
 ### Deploy
 
+#### Now
+
 After verified, we can deploy it to anywhere. Here an example of deployment using [now](https://now.sh/)
 
 ```bash
@@ -88,6 +92,33 @@ $ yarn global add now
 $ now ./dist
 ```
 
+#### Firebase Hosting
+If you are prefer using [Firebase Hosting](https://firebase.google.com/docs/hosting), make sure the `firebase.json` contains hosting configuration like this:
+
+```json
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
+```
+
+After that you can run this command to deploy
+
+```bash
+$ firebase deploy --only hosting
+```
 
 ## Built With
 
