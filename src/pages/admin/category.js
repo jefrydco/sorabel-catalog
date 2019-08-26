@@ -73,7 +73,7 @@ const Category = props => {
     }
   }
 
-  const actionRenderer = (text, record) => {
+  const actionRenderer = (uid, record) => {
     return (
       <>
         <Button onClick={() => handleTriggerEdit(record)} type="primary" style={{ marginRight: '5px' }}>
@@ -82,7 +82,7 @@ const Category = props => {
         </Button>
         <Popconfirm
           title="Are you sure delete this category?"
-          onConfirm={() => handleConfirmDelete(record)}
+          onConfirm={() => handleConfirmDelete(uid)}
         >
           <Button type="danger">
             Delete
@@ -95,7 +95,7 @@ const Category = props => {
 
   const [columns] = useState([
     { title: 'Name', dataIndex: 'text', key: 'text' },
-    { title: 'Action', dataIndex: 'action', key: 'action', render: actionRenderer }
+    { title: 'Action', dataIndex: 'uid', key: 'uid', render: actionRenderer }
   ])
 
   const { getFieldDecorator, setFieldsValue } = props.form;
