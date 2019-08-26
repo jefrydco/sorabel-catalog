@@ -9,7 +9,7 @@ export default {
       dva: true,
       dynamicImport: { webpackChunkName: true },
       title: 'Sorabel Catalog',
-      dll: true,
+      dll: false,
       
       routes: {
         exclude: [
@@ -21,5 +21,14 @@ export default {
         ],
       },
     }],
+    ['umi-plugin-firebase', {
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: "sorabel-catalogs.firebaseapp.com",
+      databaseURL: "https://sorabel-catalogs.firebaseio.com",
+      projectId: "sorabel-catalogs",
+      storageBucket: "sorabel-catalogs.appspot.com",
+      messagingSenderId: "327101891213",
+      appId: process.env.FIREBASE_APP_ID
+    }]
   ],
 }
