@@ -5,6 +5,7 @@ import Link from 'umi/link'
 
 import styles from './index.css'
 
+import { BaseCard } from '../components/Card'
 import { db } from '../components/firebase'
 
 const productsDbRef = db.collection('products')
@@ -13,10 +14,6 @@ const categoriesDbRef = db.collection('categories')
 const currencyFormatter = new Intl.NumberFormat('id-ID', {
   style: 'currency', currency: 'IDR'
 })
-
-const BaseCard = props => (
-  <Card className={styles.BaseCard} {...props}>{props.children}</Card>
-)
 
 export default (props) => {
   const [products, isProductsLoading, isProductsError] = useCollectionData(productsDbRef)
@@ -50,19 +47,25 @@ export default (props) => {
     <Row type="flex" gutter={12}>
       {newProducts.map(product => (
         <Col xs={12} key={product.uid}>
-          <Card 
-            size="small"
-            cover={
-              <img
-                src={product.images[0].response.url}
-                alt={product.name} />
-            }
+          <Link 
+            to={`/product/${product.uid}`}
+            key={product.uid}
           >
-            <Card.Meta
-              title={product.name}
-              description={currencyFormatter.format(product.price)}
-            />
-          </Card>
+            <Card 
+              size="small"
+              type="inner"
+              cover={
+                <img
+                  src={product.images[0].response.url}
+                  alt={product.name} />
+              }
+            >
+              <Card.Meta
+                title={product.name}
+                description={currencyFormatter.format(product.price)}
+              />
+            </Card>
+          </Link>
         </Col>
       ))}
     </Row>
@@ -111,20 +114,25 @@ export default (props) => {
 
   const Products = isProductsLoading ? null : (
     products.map(product => (
-      <Card 
-        size="large"
-        className={styles.ProductCard}
-        cover={
-          <img
-            src={product.images[0].response.url}
-            alt={product.name} />
-        }
+      <Link 
+        to={`/product/${product.uid}`}
+        key={product.uid}
       >
-        <Card.Meta
-          title={product.name}
-          description={currencyFormatter.format(product.price)}
-        />
-      </Card>
+        <Card 
+          size="large"
+          type="inner"
+          cover={
+            <img
+              src={product.images[0].response.url}
+              alt={product.name} />
+          }
+        >
+          <Card.Meta
+            title={product.name}
+            description={currencyFormatter.format(product.price)}
+          />
+        </Card>
+      </Link>
     ))
   )
 

@@ -40,13 +40,26 @@ const FrontLayout = props => {
         <CenteredRow>
           <Row type="flex" justify="space-between">
             <Row type="flex" align="middle">
-              <HeaderButton icon="left" shape="circle-outline" />
+              <HeaderButton 
+                icon="left"
+                shape="circle-outline"
+                onClick={() => router.push('/')}
+              />
               <h1 className={styles.Title}>{category.name}</h1>
             </Row>
             <div>
-              <HeaderButton icon="search" shape="circle-outline" />
-              <HeaderButton icon="heart" shape="circle-outline" />
-              <HeaderButton icon="shopping" shape="circle-outline" />
+              <HeaderButton 
+                icon="search"
+                shape="circle-outline"
+              />
+              <HeaderButton 
+                icon="heart"
+                shape="circle-outline"
+              />
+              <HeaderButton 
+                icon="shopping"
+                shape="circle-outline"
+              />
             </div>
           </Row>
         </CenteredRow>
