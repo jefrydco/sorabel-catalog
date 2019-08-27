@@ -17,7 +17,7 @@ const ProductForm = props => {
   const [isLoading, setLoading] = useState(false)
   const [redirect, setRedirect] = useState(false)
   const [categories, isCategoriesLoading, isCategoriesError] = useCollectionData(categoriesDbRef)
-  const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
+  const { getFieldDecorator, getFieldValue } = props.form;
   const sizeValues = getFieldValue('sizes') || []
 
   useEffect(() => {
