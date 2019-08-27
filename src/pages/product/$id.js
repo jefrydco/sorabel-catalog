@@ -128,6 +128,7 @@ export default props => {
       <Collapse 
         expandIconPosition="right"
         bordered={false}
+        style={{ marginBottom: 12 }}
       >
         <Collapse.Panel header="Detail &amp; Ukuran">
           {
