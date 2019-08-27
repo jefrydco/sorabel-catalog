@@ -5,7 +5,9 @@ Recreating sorabel catalog page
 ## Introduction
 This project can be accessed through this link [http://sorabel-catalogs.web.app](http://sorabel-catalogs.web.app), you can log in into the admin by accessing the `/login` page. The authentication system is handled by firebase, you only need to click the login button and Firebase will guide through the authentication process.
 
-After the sign in process completes, you'll be redirected into admin page located in `/admin`. You can manage product and category there.
+After the sign in process completes, you'll be redirected into admin page located in `/admin`. You can manage product* and category there.
+
+***Note: Edit product currently can't be used, it's still buggy.**
 
 ## Getting Started
 
